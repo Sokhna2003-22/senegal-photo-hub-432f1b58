@@ -15,7 +15,7 @@ function Register() {
   const [role, setRole] = useState<"client" | "photographer">("client");
   return (
     <Layout>
-      <div className="min-h-[80vh] grid place-items-center px-4 py-12 bg-muted/40">
+      <div className="min-h-[80vh] grid place-items-center px-4 py-12" style={{ background: "var(--gradient-hero)" }}>
         <div className="w-full max-w-md bg-card rounded-2xl p-8 shadow-[var(--shadow-card)]">
           <div className="flex items-center gap-2 justify-center mb-6">
             <Camera className="h-6 w-6 text-primary" />
