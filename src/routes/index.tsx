@@ -76,7 +76,7 @@ function Index() {
         </div>
         <div className="flex flex-wrap gap-3">
           {categories.map((c) => (
-            <Link key={c} to="/gallery" search={{ category: c } as never} className="px-5 py-2.5 rounded-full bg-card border border-border hover:border-primary hover:text-primary transition-colors font-medium">
+            <Link key={c} to="/gallery" className="px-5 py-2.5 rounded-full bg-card border border-border hover:border-primary hover:text-primary transition-colors font-medium">
               {c}
             </Link>
           ))}
