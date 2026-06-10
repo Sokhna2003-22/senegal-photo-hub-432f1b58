@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera } from "lucide-react";
 import { useState } from "react";
+import { saveUser, setCurrentUser } from "@/lib/local-store";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Inscription — PhotoPlatform" }] }),
@@ -13,6 +14,26 @@ export const Route = createFileRoute("/register")({
 
 function Register() {
   const [role, setRole] = useState<"client" | "photographer">("client");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [city, setCity] = useState("");
+  const navigate = useNavigate();
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+    const user = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      email: email.trim(),
+      role,
+      city: city.trim() || undefined,
+    };
+    saveUser(user);
+    setCurrentUser(user);
+    navigate({ to: "/dashboard" });
+  }
+
   return (
     <Layout>
       <div className="min-h-[80vh] grid place-items-center px-4 py-12" style={{ background: "var(--gradient-hero)" }}>
@@ -29,24 +50,24 @@ function Register() {
               </button>
             ))}
           </div>
-          <form className="mt-6 space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
               <Label htmlFor="name">Nom complet</Label>
-              <Input id="name" className="mt-1" />
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1" required />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" className="mt-1" />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" required />
             </div>
             {role === "photographer" && (
               <div>
                 <Label htmlFor="city">Ville</Label>
-                <Input id="city" placeholder="Dakar" className="mt-1" />
+                <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Dakar" className="mt-1" />
               </div>
             )}
             <div>
               <Label htmlFor="password">Mot de passe</Label>
-              <Input id="password" type="password" className="mt-1" />
+              <Input id="password" type="password" className="mt-1" required />
             </div>
             <Button type="submit" className="w-full bg-primary hover:bg-primary-glow text-primary-foreground">Créer mon compte</Button>
           </form>
