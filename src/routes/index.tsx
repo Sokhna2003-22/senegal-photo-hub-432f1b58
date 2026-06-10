@@ -3,9 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Camera, Search, Sparkles, Users } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { PhotoCard } from "@/components/PhotoCard";
 import { PhotographerCard } from "@/components/PhotographerCard";
-import { photographers, photos, categories } from "@/lib/mock-data";
+import { photographers, categories } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,10 +56,8 @@ function Index() {
             </div>
           </div>
           <div className="relative hidden md:block">
-            <div className="grid grid-cols-2 gap-3">
-              {photos.slice(0, 4).map((p, i) => (
-                <img key={p.id} src={p.image} alt={p.title} className={`rounded-2xl object-cover shadow-2xl ${i % 2 === 0 ? "h-64" : "h-48 mt-8"}`} />
-              ))}
+            <div className="aspect-square rounded-3xl border border-white/10 bg-white/5 backdrop-blur grid place-items-center">
+              <Camera className="h-32 w-32 text-primary/70" />
             </div>
           </div>
         </div>
@@ -76,29 +73,15 @@ function Index() {
         </div>
         <div className="flex flex-wrap gap-3">
           {categories.map((c) => (
-            <Link key={c} to="/gallery" className="px-5 py-2.5 rounded-full bg-card border border-border hover:border-primary hover:text-primary transition-colors font-medium">
+            <Link key={c} to="/photographers" className="px-5 py-2.5 rounded-full bg-card border border-border hover:border-primary hover:text-primary transition-colors font-medium">
               {c}
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured Photos */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold">Photos en vedette</h2>
-            <p className="text-muted-foreground mt-2">Les plus appréciées de la semaine</p>
-          </div>
-          <Button asChild variant="ghost"><Link to="/gallery">Voir tout <ArrowRight className="h-4 w-4" /></Link></Button>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {photos.slice(0, 8).map((p) => <PhotoCard key={p.id} photo={p} />)}
-        </div>
-      </section>
-
       {/* Featured Photographers */}
-      <section className="bg-muted/50 py-16 mt-12">
+      <section className="bg-muted/40 py-16 mt-12">
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between mb-8">
             <div>

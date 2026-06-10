@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -27,11 +26,6 @@ const RegisterRoute = RegisterRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -70,7 +64,6 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
-  '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/photographers/$id': typeof PhotographersIdRoute
@@ -81,7 +74,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
-  '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/photographers/$id': typeof PhotographersIdRoute
@@ -93,7 +85,6 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
-  '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/photographers/$id': typeof PhotographersIdRoute
@@ -106,7 +97,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/dashboard'
-    | '/gallery'
     | '/login'
     | '/register'
     | '/photographers/$id'
@@ -117,7 +107,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/dashboard'
-    | '/gallery'
     | '/login'
     | '/register'
     | '/photographers/$id'
@@ -128,7 +117,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/dashboard'
-    | '/gallery'
     | '/login'
     | '/register'
     | '/photographers/$id'
@@ -140,7 +128,6 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   DashboardRoute: typeof DashboardRoute
-  GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   PhotographersIdRoute: typeof PhotographersIdRoute
@@ -161,13 +148,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -220,7 +200,6 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   DashboardRoute: DashboardRoute,
-  GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   PhotographersIdRoute: PhotographersIdRoute,

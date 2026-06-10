@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Camera, Menu, User } from "lucide-react";
+import { Camera, ImageIcon, Menu, User } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const links = [
   { to: "/", label: "Accueil" },
-  { to: "/gallery", label: "Galerie" },
   { to: "/photographers", label: "Photographes" },
+  { to: "/dashboard", label: "Mes photos" },
   { to: "/about", label: "À propos" },
 ];
 
@@ -28,6 +28,9 @@ export function Navbar() {
           ))}
         </nav>
         <div className="hidden md:flex items-center gap-2">
+          <Button asChild variant="outline" className="border-primary/60 text-primary bg-transparent hover:bg-primary hover:text-primary-foreground">
+            <Link to="/dashboard"><ImageIcon className="h-4 w-4" />Accéder à mes photos</Link>
+          </Button>
           <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
             <Link to="/login"><User className="h-4 w-4" />Connexion</Link>
           </Button>
@@ -47,6 +50,7 @@ export function Navbar() {
                 <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-white/90 hover:text-primary text-lg font-medium">{l.label}</Link>
               ))}
               <hr className="border-white/10 my-2" />
+              <Link to="/dashboard" onClick={() => setOpen(false)} className="text-primary font-semibold">Accéder à mes photos</Link>
               <Link to="/login" onClick={() => setOpen(false)} className="text-white/90 hover:text-primary">Connexion</Link>
               <Link to="/register" onClick={() => setOpen(false)} className="text-primary font-semibold">S'inscrire</Link>
             </nav>
