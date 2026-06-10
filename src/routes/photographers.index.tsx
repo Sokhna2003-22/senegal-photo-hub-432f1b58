@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { PhotographerCard } from "@/components/PhotographerCard";
 import { Input } from "@/components/ui/input";
-import { photographers, categories } from "@/lib/mock-data";
-import { Search } from "lucide-react";
+import { getPhotographers, type StoredUser } from "@/lib/local-store";
+import { Camera, Folder, Search } from "lucide-react";
 
 export const Route = createFileRoute("/photographers/")({
   head: () => ({
@@ -18,8 +17,15 @@ export const Route = createFileRoute("/photographers/")({
 
 function PhotographersPage() {
   const [q, setQ] = useState("");
-  const [spec, setSpec] = useState("Tout");
-  const list = photographers.filter((p) => (spec === "Tout" || p.specialty === spec) && (p.name.toLowerCase().includes(q.toLowerCase()) || p.city.toLowerCase().includes(q.toLowerCase())));
+  const [list, setList] = useState<StoredUser[]>([]);
+  useEffect(() => {
+    setList(getPhotographers());
+  }, []);
+  const filtered = list.filter(
+    (p) =>
+      p.name.toLowerCase().includes(q.toLowerCase()) ||
+      (p.city || "").toLowerCase().includes(q.toLowerCase()),
+  );
   return (
     <Layout>
       <section className="bg-navy text-white py-14">
@@ -33,16 +39,30 @@ function PhotographersPage() {
         </div>
       </section>
       <section className="container mx-auto px-4 py-10">
-        <div className="flex flex-wrap gap-2 mb-8">
-          {["Tout", ...categories].map((c) => (
-            <button key={c} onClick={() => setSpec(c)} className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${spec === c ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary"}`}>
-              {c}
-            </button>
-          ))}
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {list.map((p) => <PhotographerCard key={p.id} p={p} />)}
-        </div>
+        {filtered.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-border bg-card/50 py-16 text-center">
+            <p className="text-muted-foreground">Aucun photographe trouvé.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((p) => (
+              <div key={p.id} className="rounded-xl bg-card p-6 shadow-[var(--shadow-card)]">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 grid place-items-center">
+                    <Camera className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold">{p.name}</h3>
+                    {p.city && <p className="text-xs text-muted-foreground">{p.city}</p>}
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Folder className="h-4 w-4" /> 0 album(s)
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </Layout>
   );
