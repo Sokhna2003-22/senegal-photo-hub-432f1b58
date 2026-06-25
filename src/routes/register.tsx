@@ -9,11 +9,16 @@ import { saveUser, setCurrentUser } from "@/lib/local-store";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Inscription — PhotoPlatform" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    role: s.role === "photographer" ? "photographer" as const : undefined,
+  }),
   component: Register,
 });
 
 function Register() {
-  const [role, setRole] = useState<"client" | "photographer">("client");
+  const { role: forcedRole } = Route.useSearch();
+  const [role, setRole] = useState<"client" | "photographer">(forcedRole ?? "client");
+  const lockRole = forcedRole === "photographer";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
@@ -42,14 +47,18 @@ function Register() {
             <Camera className="h-6 w-6 text-primary" />
             <span className="font-bold text-lg">PhotoPlatform</span>
           </div>
-          <h1 className="text-2xl font-bold text-center">Créer un compte</h1>
-          <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
-            {(["client", "photographer"] as const).map((r) => (
-              <button key={r} onClick={() => setRole(r)} className={`py-2 rounded-md text-sm font-medium transition-colors ${role === r ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}>
-                {r === "client" ? "Client" : "Photographe"}
-              </button>
-            ))}
-          </div>
+          <h1 className="text-2xl font-bold text-center">
+            {lockRole ? "Devenir photographe" : "Créer un compte"}
+          </h1>
+          {!lockRole && (
+            <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
+              {(["client", "photographer"] as const).map((r) => (
+                <button key={r} type="button" onClick={() => setRole(r)} className={`py-2 rounded-md text-sm font-medium transition-colors ${role === r ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}>
+                  {r === "client" ? "Client" : "Photographe"}
+                </button>
+              ))}
+            </div>
+          )}
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
               <Label htmlFor="name">Nom complet</Label>

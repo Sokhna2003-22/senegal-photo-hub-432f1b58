@@ -76,7 +76,7 @@ function Index() {
           <div className="rounded-xl border-2 border-dashed border-border bg-card/50 py-16 text-center">
             <p className="text-muted-foreground">Aucun photographe inscrit pour le moment.</p>
             <Button asChild className="mt-4 bg-primary hover:bg-primary-glow text-primary-foreground">
-              <Link to="/register">Devenir photographe</Link>
+              <Link to="/register" search={{ role: "photographer" }}>Devenir photographe</Link>
             </Button>
           </div>
         ) : (
