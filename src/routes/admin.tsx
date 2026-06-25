@@ -17,7 +17,7 @@ function Admin() {
   ];
   return (
     <Layout>
-      <section className="bg-navy text-white py-10">
+      <section className="bg-navy text-white py-10 border-b-4 border-primary">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl md:text-3xl font-bold">Espace administrateur</h1>
           <p className="text-white/70 mt-1">Gestion globale de la plateforme</p>
