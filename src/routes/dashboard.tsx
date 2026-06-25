@@ -44,8 +44,8 @@ function PhotographerDashboard({ user }: { user: StoredUser }) {
   ];
   return (
     <Layout>
-      <div className="bg-navy h-2" />
-      <section className="bg-muted/40 py-8">
+      <div className="h-2" style={{ background: "var(--gradient-primary)" }} />
+      <section className="bg-muted/40 py-8 border-t-4 border-primary">
         <div className="container mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Camera className="h-8 w-8 text-foreground" />
@@ -98,8 +98,8 @@ function PhotographerDashboard({ user }: { user: StoredUser }) {
 function ClientDashboard({ user }: { user: StoredUser }) {
   return (
     <Layout>
-      <div className="bg-navy h-2" />
-      <section className="bg-muted/40 py-8">
+      <div className="h-2" style={{ background: "var(--gradient-primary)" }} />
+      <section className="bg-muted/40 py-8 border-t-4 border-primary">
         <div className="container mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <UserIcon className="h-8 w-8 text-foreground" />

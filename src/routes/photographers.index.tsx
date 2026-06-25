@@ -28,7 +28,7 @@ function PhotographersPage() {
   );
   return (
     <Layout>
-      <section className="bg-navy text-white py-14">
+      <section className="bg-navy text-white py-14 border-b-4 border-primary">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold">Nos photographes</h1>
           <p className="text-white/70 mt-2">Talentueux, vérifiés, et près de chez vous.</p>
@@ -46,7 +46,7 @@ function PhotographersPage() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((p) => (
-              <div key={p.id} className="rounded-xl bg-card p-6 shadow-[var(--shadow-card)]">
+              <div key={p.id} className="rounded-xl bg-card p-6 shadow-[var(--shadow-card)] border-t-2 border-primary hover:shadow-lg transition-shadow">
                 <div className="flex items-center gap-3">
                   <div className="h-12 w-12 rounded-full bg-primary/10 grid place-items-center">
                     <Camera className="h-5 w-5 text-primary" />

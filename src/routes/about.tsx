@@ -15,9 +15,9 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <Layout>
-      <section className="bg-navy text-white py-20">
+      <section className="bg-navy text-white py-20 border-b-4 border-primary">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h1 className="text-4xl md:text-5xl font-bold">Notre mission</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">Notre <span className="text-primary">mission</span></h1>
           <p className="mt-4 text-white/80 text-lg">Valoriser le talent des photographes sénégalais et faciliter la rencontre avec ceux qui cherchent à immortaliser leurs moments précieux.</p>
         </div>
       </section>
