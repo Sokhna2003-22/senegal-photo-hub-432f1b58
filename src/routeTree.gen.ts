@@ -10,17 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as PhotographersIndexRouteImport } from './routes/photographers.index'
+import { Route as GalleryIndexRouteImport } from './routes/gallery.index'
+import { Route as ReserveUsernameRouteImport } from './routes/reserve.$username'
+import { Route as PortfolioCreateRouteImport } from './routes/portfolio.create'
 import { Route as PhotographersIdRouteImport } from './routes/photographers.$id'
+import { Route as GalleryCreateRouteImport } from './routes/gallery.create'
+import { Route as GalleryIdRouteImport } from './routes/gallery.$id'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -48,14 +66,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/portfolio/',
+  path: '/portfolio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhotographersIndexRoute = PhotographersIndexRouteImport.update({
   id: '/photographers/',
   path: '/photographers/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GalleryIndexRoute = GalleryIndexRouteImport.update({
+  id: '/gallery/',
+  path: '/gallery/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserveUsernameRoute = ReserveUsernameRouteImport.update({
+  id: '/reserve/$username',
+  path: '/reserve/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioCreateRoute = PortfolioCreateRouteImport.update({
+  id: '/portfolio/create',
+  path: '/portfolio/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhotographersIdRoute = PhotographersIdRouteImport.update({
   id: '/photographers/$id',
   path: '/photographers/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryCreateRoute = GalleryCreateRouteImport.update({
+  id: '/gallery/create',
+  path: '/gallery/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryIdRoute = GalleryIdRouteImport.update({
+  id: '/gallery/$id',
+  path: '/gallery/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -65,9 +113,17 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
+  '/orders': typeof OrdersRoute
   '/register': typeof RegisterRoute
+  '/gallery/$id': typeof GalleryIdRoute
+  '/gallery/create': typeof GalleryCreateRoute
   '/photographers/$id': typeof PhotographersIdRoute
+  '/portfolio/create': typeof PortfolioCreateRoute
+  '/reserve/$username': typeof ReserveUsernameRoute
+  '/gallery/': typeof GalleryIndexRoute
   '/photographers/': typeof PhotographersIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +131,17 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
+  '/orders': typeof OrdersRoute
   '/register': typeof RegisterRoute
+  '/gallery/$id': typeof GalleryIdRoute
+  '/gallery/create': typeof GalleryCreateRoute
   '/photographers/$id': typeof PhotographersIdRoute
+  '/portfolio/create': typeof PortfolioCreateRoute
+  '/reserve/$username': typeof ReserveUsernameRoute
+  '/gallery': typeof GalleryIndexRoute
   '/photographers': typeof PhotographersIndexRoute
+  '/portfolio': typeof PortfolioIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,9 +150,17 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/messages': typeof MessagesRoute
+  '/orders': typeof OrdersRoute
   '/register': typeof RegisterRoute
+  '/gallery/$id': typeof GalleryIdRoute
+  '/gallery/create': typeof GalleryCreateRoute
   '/photographers/$id': typeof PhotographersIdRoute
+  '/portfolio/create': typeof PortfolioCreateRoute
+  '/reserve/$username': typeof ReserveUsernameRoute
+  '/gallery/': typeof GalleryIndexRoute
   '/photographers/': typeof PhotographersIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,9 +170,17 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/messages'
+    | '/orders'
     | '/register'
+    | '/gallery/$id'
+    | '/gallery/create'
     | '/photographers/$id'
+    | '/portfolio/create'
+    | '/reserve/$username'
+    | '/gallery/'
     | '/photographers/'
+    | '/portfolio/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,9 +188,17 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/messages'
+    | '/orders'
     | '/register'
+    | '/gallery/$id'
+    | '/gallery/create'
     | '/photographers/$id'
+    | '/portfolio/create'
+    | '/reserve/$username'
+    | '/gallery'
     | '/photographers'
+    | '/portfolio'
   id:
     | '__root__'
     | '/'
@@ -118,9 +206,17 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/login'
+    | '/messages'
+    | '/orders'
     | '/register'
+    | '/gallery/$id'
+    | '/gallery/create'
     | '/photographers/$id'
+    | '/portfolio/create'
+    | '/reserve/$username'
+    | '/gallery/'
     | '/photographers/'
+    | '/portfolio/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,9 +225,17 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  MessagesRoute: typeof MessagesRoute
+  OrdersRoute: typeof OrdersRoute
   RegisterRoute: typeof RegisterRoute
+  GalleryIdRoute: typeof GalleryIdRoute
+  GalleryCreateRoute: typeof GalleryCreateRoute
   PhotographersIdRoute: typeof PhotographersIdRoute
+  PortfolioCreateRoute: typeof PortfolioCreateRoute
+  ReserveUsernameRoute: typeof ReserveUsernameRoute
+  GalleryIndexRoute: typeof GalleryIndexRoute
   PhotographersIndexRoute: typeof PhotographersIndexRoute
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,6 +245,20 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -178,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/portfolio'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/photographers/': {
       id: '/photographers/'
       path: '/photographers'
@@ -185,11 +310,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PhotographersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gallery/': {
+      id: '/gallery/'
+      path: '/gallery'
+      fullPath: '/gallery/'
+      preLoaderRoute: typeof GalleryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserve/$username': {
+      id: '/reserve/$username'
+      path: '/reserve/$username'
+      fullPath: '/reserve/$username'
+      preLoaderRoute: typeof ReserveUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/create': {
+      id: '/portfolio/create'
+      path: '/portfolio/create'
+      fullPath: '/portfolio/create'
+      preLoaderRoute: typeof PortfolioCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/photographers/$id': {
       id: '/photographers/$id'
       path: '/photographers/$id'
       fullPath: '/photographers/$id'
       preLoaderRoute: typeof PhotographersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery/create': {
+      id: '/gallery/create'
+      path: '/gallery/create'
+      fullPath: '/gallery/create'
+      preLoaderRoute: typeof GalleryCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery/$id': {
+      id: '/gallery/$id'
+      path: '/gallery/$id'
+      fullPath: '/gallery/$id'
+      preLoaderRoute: typeof GalleryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -201,10 +361,28 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  MessagesRoute: MessagesRoute,
+  OrdersRoute: OrdersRoute,
   RegisterRoute: RegisterRoute,
+  GalleryIdRoute: GalleryIdRoute,
+  GalleryCreateRoute: GalleryCreateRoute,
   PhotographersIdRoute: PhotographersIdRoute,
+  PortfolioCreateRoute: PortfolioCreateRoute,
+  ReserveUsernameRoute: ReserveUsernameRoute,
+  GalleryIndexRoute: GalleryIndexRoute,
   PhotographersIndexRoute: PhotographersIndexRoute,
+  PortfolioIndexRoute: PortfolioIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

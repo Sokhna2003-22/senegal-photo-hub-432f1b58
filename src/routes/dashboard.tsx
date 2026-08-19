@@ -7,7 +7,8 @@ import {
   Bell, Camera, Folder, FolderPlus, Images, ImageIcon, List, Mail,
   Plus, RefreshCw, ShoppingBag, ShoppingCart, User as UserIcon,
 } from "lucide-react";
-import { getCurrentUser, type StoredUser } from "@/lib/local-store";
+import { getCurrentUser } from "@/lib/api/auth";
+import { getMyGalleries, getMyOrders, getMyAlbums } from "@/lib/api/client";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Mon espace — PhotoPlatform" }] }),
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function Dashboard() {
-  const [user, setUser] = useState<StoredUser | null>(null);
+  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,97 +37,223 @@ function Dashboard() {
   );
 }
 
-function PhotographerDashboard({ user }: { user: StoredUser }) {
+function PhotographerDashboard({ user }: { user: any }) {
+  const [galleries, setGalleries] = useState<any[]>([]);
+  const [albums, setAlbums] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [countdown, setCountdown] = useState(30);
+
+  useEffect(() => {
+    loadData();
+    const interval = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) { loadData(); return 30; }
+        return c - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  async function loadData() {
+    try {
+      const [g, a, o] = await Promise.all([
+        getMyGalleries(),
+        getMyAlbums(),
+        getMyOrders(),
+      ]);
+      setGalleries(Array.isArray(g) ? g : []);
+      setAlbums(Array.isArray(a) ? a : []);
+      setOrders(Array.isArray(o) ? o.filter((ord: any) => ord.status === "pending") : []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const stats = [
-    { icon: Images, label: "Galeries clients", value: "0" },
-    { icon: Folder, label: "Albums portfolio", value: "0" },
-    { icon: ShoppingCart, label: "Commandes en attente", value: "0" },
+    { icon: Images, label: "Galeries clients", value: galleries.length },
+    { icon: Folder, label: "Albums portfolio", value: albums.length },
+    { icon: ShoppingCart, label: "Commandes en attente", value: orders.length },
   ];
+
   return (
     <Layout>
       <div className="h-2" style={{ background: "var(--gradient-primary)" }} />
+
+      {/* Header */}
       <section className="bg-muted/40 py-8 border-t-4 border-primary">
         <div className="container mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Camera className="h-8 w-8 text-foreground" />
-            <h1 className="text-3xl font-bold">Bonjour, {user.name} <span>👋</span></h1>
+            <h1 className="text-3xl font-bold">
+              Bonjour, {user.first_name || user.username} 👋
+            </h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold">Photographe</span>
-            <Button variant="ghost" size="sm" className="text-muted-foreground"><RefreshCw className="h-4 w-4" />Actualiser</Button>
+            <span className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold">
+              Photographe
+            </span>
+            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={loadData}>
+              <RefreshCw className="h-4 w-4 mr-1" />
+              Actualiser ({countdown}s)
+            </Button>
           </div>
         </div>
+
+        {/* Stats */}
         <div className="container mx-auto px-4 mt-8 grid sm:grid-cols-3 gap-6">
           {stats.map((s) => (
             <div key={s.label} className="text-center md:text-left">
               <s.icon className="h-7 w-7 text-foreground mx-auto md:mx-0" />
-              <div className="text-4xl font-bold mt-2">{s.value}</div>
+              <div className="text-4xl font-bold mt-2">
+                {loading ? "..." : s.value}
+              </div>
               <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-navy-deep text-white py-4">
-        <div className="container mx-auto px-4 flex items-center gap-2 font-semibold">
-          ⚡ Actions rapides
-        </div>
-      </section>
+      {/* Actions rapides */}
+      
       <section className="container mx-auto px-4 py-6 flex flex-wrap gap-3">
-        <Button className="bg-primary hover:bg-primary-glow text-primary-foreground"><Plus className="h-4 w-4" />Nouvelle Galerie</Button>
-        <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary"><Images className="h-4 w-4" />Mes Galeries</Button>
-        <Button variant="outline"><FolderPlus className="h-4 w-4" />Nouvel Album</Button>
-        <Button variant="outline"><Folder className="h-4 w-4" />Mon Portfolio</Button>
-        <Button variant="outline" className="border-emerald-600 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-700"><ShoppingBag className="h-4 w-4" />Mes Commandes</Button>
-        <Button variant="outline" className="text-muted-foreground"><Mail className="h-4 w-4" />Messages</Button>
+        <Button asChild variant="outline" className="border-primary text-primary">
+          <Link to="/gallery/">
+            <Images className="h-4 w-4 mr-1" />Mes Galeries
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to="/portfolio/">
+            <Folder className="h-4 w-4 mr-1" />Mon Portfolio
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="border-emerald-600 text-emerald-700">
+          <Link to="/orders">
+            <ShoppingBag className="h-4 w-4 mr-1" />Mes Commandes
+          </Link>
+        </Button>
+        <Button asChild variant="outline" className="text-muted-foreground">
+          <Link to="/messages">
+            <Mail className="h-4 w-4 mr-1" />Messages
+          </Link>
+        </Button>
       </section>
 
+      {/* Galeries et Commandes */}
       <section className="container mx-auto px-4 pb-16 grid md:grid-cols-2 gap-6">
         <Panel icon={Folder} title="Dernières galeries clients">
-          <div className="rounded-lg bg-card p-4 flex items-center justify-between">
-            <span className="text-muted-foreground">Aucune galerie pour le moment.</span>
-          </div>
+          {galleries.length > 0 ? (
+            <ul className="space-y-2">
+              {galleries.slice(0, 5).map((g: any) => (
+                <li key={g.id}
+                    className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2">
+                  <Link to="/gallery/$id" params={{ id: g.id }}
+                        className="font-medium text-sm hover:text-primary">
+                    {g.title}
+                  </Link>
+                  <span className="text-xs bg-secondary px-2 py-0.5 rounded-full">
+                    {g.photo_count} photos
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground p-2">Aucune galerie pour le moment.</p>
+          )}
         </Panel>
-        <Panel icon={Bell} title="Commandes en attente">
-          <p className="text-muted-foreground p-2">Aucune commande en attente.</p>
-        </Panel>
+
+        
       </section>
     </Layout>
   );
 }
 
-function ClientDashboard({ user }: { user: StoredUser }) {
+function ClientDashboard({ user }: { user: any }) {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMyOrders()
+      .then((data) => setOrders(Array.isArray(data) ? data : []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Layout>
       <div className="h-2" style={{ background: "var(--gradient-primary)" }} />
+
+      {/* Header */}
       <section className="bg-muted/40 py-8 border-t-4 border-primary">
         <div className="container mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <UserIcon className="h-8 w-8 text-foreground" />
-            <h1 className="text-3xl font-bold">Bonjour, {user.name} <span>👋</span></h1>
+            <h1 className="text-3xl font-bold">
+              Bonjour, {user.first_name || user.username} 👋
+            </h1>
           </div>
-          <span className="px-4 py-1.5 rounded-md bg-blue-600 text-white text-sm font-semibold">Client</span>
+          <span className="px-4 py-1.5 rounded-md bg-blue-600 text-white text-sm font-semibold">
+            Client
+          </span>
         </div>
       </section>
 
+      {/* Contenu */}
       <section className="container mx-auto px-4 py-10 grid md:grid-cols-2 gap-6">
         <Panel icon={ShoppingBag} title="Mes commandes">
-          <p className="text-muted-foreground p-2">Aucune commande pour le moment.</p>
+          {loading ? (
+            <p className="text-muted-foreground p-2">Chargement...</p>
+          ) : orders.length > 0 ? (
+            <ul className="space-y-2">
+              {orders.map((o: any) => (
+                <li key={o.id}
+                    className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2">
+                  <span className="text-sm font-medium">{o.service_type}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                    o.status === "pending" ? "bg-yellow-100 text-yellow-700" :
+                    o.status === "confirmed" ? "bg-blue-100 text-blue-700" :
+                    o.status === "completed" ? "bg-green-100 text-green-700" :
+                    "bg-red-100 text-red-700"
+                  }`}>
+                    {o.status === "pending" ? "En attente" :
+                     o.status === "confirmed" ? "Confirmée" :
+                     o.status === "completed" ? "Terminée" : "Annulée"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground p-2">Aucune commande pour le moment.</p>
+          )}
+          <div className="mt-3">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/orders">
+                <List className="h-4 w-4 mr-1" />Voir toutes mes réservations
+              </Link>
+            </Button>
+          </div>
         </Panel>
+
         <Panel icon={ImageIcon} title="Accéder à mes photos">
-          <p className="text-muted-foreground p-2">Vous avez reçu un code d'accès ? Consultez votre galerie privée.</p>
+          <p className="text-muted-foreground p-2">
+            Vous avez reçu un code d'accès ? Consultez votre galerie privée.
+          </p>
           <div className="flex flex-wrap gap-2 p-2">
             <AccessPhotosDialog
               trigger={
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 hover:text-primary">
-                  <ImageIcon className="h-4 w-4" />Saisir mon code
+                <Button variant="outline"
+                        className="border-primary text-primary hover:bg-primary/10">
+                  <ImageIcon className="h-4 w-4 mr-1" />Saisir mon code
                 </Button>
               }
             />
-            <Button asChild variant="outline" className="border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-600">
-              <Link to="/dashboard"><List className="h-4 w-4" />Voir mes réservations</Link>
+            <Button asChild variant="outline" className="text-muted-foreground">
+              <Link to="/messages">
+                <Mail className="h-4 w-4 mr-1" />Mes messages
+              </Link>
             </Button>
-            <Button variant="outline" className="text-muted-foreground"><Mail className="h-4 w-4" />Mes messages</Button>
           </div>
         </Panel>
       </section>
@@ -134,7 +261,13 @@ function ClientDashboard({ user }: { user: StoredUser }) {
   );
 }
 
-function Panel({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
+function Panel({
+  icon: Icon, title, children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-lg overflow-hidden shadow-[var(--shadow-card)] bg-card">
       <div className="bg-navy-deep text-white px-4 py-3 flex items-center gap-2 font-semibold">
