@@ -39,6 +39,9 @@ export const register = (data: any) =>
 
 export const getMe = () => apiCall("/auth/me/");
 
+export const getAdminStats = () =>
+    apiCall("/auth/admin/stats/");
+
 // ── Photographes ──────────────────────────────────
 export const getPhotographers = () =>
     apiCall("/auth/photographers/");

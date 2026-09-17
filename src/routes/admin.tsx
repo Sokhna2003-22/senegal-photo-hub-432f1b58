@@ -1,84 +1,173 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { Button } from "@/components/ui/button";
-import { photographers, photos } from "@/lib/mock-data";
-import { BadgeCheck, Camera, Image as ImageIcon, ShieldCheck, Trash2, Users } from "lucide-react";
+import {
+  Users, Camera, User, Images, Folder,
+  ShoppingBag, MessageSquare, Shield
+} from "lucide-react";
+import { getAdminStats } from "@/lib/api/client";
+import { getCurrentUser } from "@/lib/api/auth";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Administration — PhotoPlatform" }] }),
-  component: Admin,
+  component: AdminDashboard,
 });
 
-function Admin() {
-  const stats = [
-    { icon: Users, label: "Photographes", value: photographers.length },
-    { icon: ImageIcon, label: "Photos", value: photos.length },
-    { icon: ShieldCheck, label: "Vérifiés", value: photographers.filter((p) => p.verified).length },
+function AdminDashboard() {
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
+  useEffect(() => {
+    if (!user) { navigate({ to: "/login" }); return; }
+    if (!user.is_staff) { navigate({ to: "/dashboard" }); return; }
+    getAdminStats()
+      .then((data) => {
+        if (data.error) { setError(data.error); return; }
+        setStats(data);
+      })
+      .catch(() => setError("Erreur de chargement"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <Layout>
+      <div className="container mx-auto px-4 py-20 text-center text-muted-foreground">
+        Chargement...
+      </div>
+    </Layout>
+  );
+
+  if (error) return (
+    <Layout>
+      <div className="container mx-auto px-4 py-20 text-center text-destructive">
+        {error}
+      </div>
+    </Layout>
+  );
+
+  const statCards = [
+    { icon: Users, label: "Total utilisateurs", value: stats?.total_users, color: "bg-blue-500/10 text-blue-500" },
+    { icon: Camera, label: "Photographes", value: stats?.total_photographers, color: "bg-primary/10 text-primary" },
+    { icon: User, label: "Clients", value: stats?.total_clients, color: "bg-green-500/10 text-green-500" },
+    { icon: Images, label: "Galeries clients", value: stats?.total_galleries, color: "bg-purple-500/10 text-purple-500" },
+    { icon: Folder, label: "Albums portfolio", value: stats?.total_albums, color: "bg-yellow-500/10 text-yellow-500" },
+    { icon: ShoppingBag, label: "Commandes", value: stats?.total_orders, color: "bg-orange-500/10 text-orange-500" },
+    { icon: MessageSquare, label: "Messages", value: stats?.total_messages, color: "bg-pink-500/10 text-pink-500" },
   ];
+
   return (
     <Layout>
-      <section className="bg-navy text-white py-10 border-b-4 border-primary">
-        <div className="container mx-auto px-4">
-          <h1 className="text-2xl md:text-3xl font-bold">Espace administrateur</h1>
-          <p className="text-white/70 mt-1">Gestion globale de la plateforme</p>
+      <div className="container mx-auto px-4 py-8">
+
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-12 w-12 rounded-xl bg-primary/10 grid place-items-center">
+            <Shield className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard Administrateur</h1>
+            <p className="text-muted-foreground text-sm">
+              Vue d'ensemble de la plateforme SunuVision
+            </p>
+          </div>
         </div>
-      </section>
-      <section className="container mx-auto px-4 py-10">
-        <div className="grid gap-4 sm:grid-cols-3 mb-10">
-          {stats.map((s) => (
-            <div key={s.label} className="rounded-xl p-6 bg-card shadow-[var(--shadow-card)] flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full grid place-items-center" style={{ background: "var(--gradient-primary)" }}>
-                <s.icon className="h-5 w-5 text-white" />
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {statCards.map((s) => (
+            <div key={s.label}
+                 className="bg-card rounded-2xl p-5 shadow-[var(--shadow-card)] border">
+              <div className={`w-12 h-12 rounded-xl ${s.color} grid place-items-center mb-3`}>
+                <s.icon className="h-6 w-6" />
               </div>
-              <div>
-                <div className="text-2xl font-bold">{s.value}</div>
-                <div className="text-sm text-muted-foreground">{s.label}</div>
-              </div>
+              <p className="text-3xl font-bold">{s.value ?? 0}</p>
+              <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
             </div>
           ))}
         </div>
-        <div className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden">
-          <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-            <h2 className="font-bold flex items-center gap-2"><Camera className="h-4 w-4 text-primary" />Photographes</h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+
+          {/* Derniers utilisateurs */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+            <div className="px-5 py-4 border-b flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <h2 className="font-semibold">Derniers inscrits</h2>
+            </div>
+            <div className="p-4 space-y-3">
+              {stats?.recent_users?.length > 0 ? (
+                stats.recent_users.map((u: any) => (
+                  <div key={u.id}
+                       className="flex items-center justify-between rounded-xl bg-muted/40 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-full bg-primary/10 grid place-items-center">
+                        <span className="text-primary font-bold text-sm">
+                          {(u.first_name || u.username)?.[0]?.toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">
+                          {u.first_name && u.last_name
+                            ? `${u.first_name} ${u.last_name}`
+                            : u.username}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{u.email}</p>
+                      </div>
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      u.role === 'photographer'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-blue-500/10 text-blue-500'
+                    }`}>
+                      {u.role === 'photographer' ? '📸 Photo' : '👤 Client'}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm p-2">Aucun utilisateur.</p>
+              )}
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 text-left">
-                <tr>
-                  <th className="px-6 py-3 font-semibold">Nom</th>
-                  <th className="px-6 py-3 font-semibold">Ville</th>
-                  <th className="px-6 py-3 font-semibold">Spécialité</th>
-                  <th className="px-6 py-3 font-semibold">Statut</th>
-                  <th className="px-6 py-3 font-semibold text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {photographers.map((p) => (
-                  <tr key={p.id} className="border-t border-border">
-                    <td className="px-6 py-3 flex items-center gap-3">
-                      <img src={p.avatar} alt="" className="h-8 w-8 rounded-full object-cover" />
-                      <span className="font-medium">{p.name}</span>
-                    </td>
-                    <td className="px-6 py-3">{p.city}</td>
-                    <td className="px-6 py-3">{p.specialty}</td>
-                    <td className="px-6 py-3">
-                      {p.verified ? (
-                        <span className="inline-flex items-center gap-1 text-xs text-primary"><BadgeCheck className="h-3 w-3" />Vérifié</span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">En attente</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-3 text-right">
-                      <Button size="sm" variant="ghost"><BadgeCheck className="h-4 w-4" /></Button>
-                      <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4" /></Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Dernières commandes */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+            <div className="px-5 py-4 border-b flex items-center gap-2">
+              <ShoppingBag className="h-5 w-5 text-primary" />
+              <h2 className="font-semibold">Dernières commandes</h2>
+            </div>
+            <div className="p-4 space-y-3">
+              {stats?.recent_orders?.length > 0 ? (
+                stats.recent_orders.map((o: any) => (
+                  <div key={o.id}
+                       className="flex items-center justify-between rounded-xl bg-muted/40 px-4 py-3">
+                    <div>
+                      <p className="font-medium text-sm">{o.service_type}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {o.client?.first_name} → {o.photographer?.first_name}
+                      </p>
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      o.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                      o.status === 'confirmed' ? 'bg-blue-100 text-blue-700' :
+                      o.status === 'completed' ? 'bg-green-100 text-green-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {o.status === 'pending' ? 'En attente' :
+                       o.status === 'confirmed' ? 'Confirmée' :
+                       o.status === 'completed' ? 'Terminée' : 'Annulée'}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm p-2">Aucune commande.</p>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+
+      </div>
     </Layout>
   );
 }

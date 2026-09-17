@@ -1,10 +1,9 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && cp dist/client/index.html dist/client/404.html"
   publish = "dist/client"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_FLAGS = "--legacy-peer-deps"
 
 [[redirects]]
   from = "/*"

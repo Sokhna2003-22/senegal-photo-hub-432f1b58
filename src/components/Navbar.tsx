@@ -130,6 +130,12 @@ export function Navbar() {
                     onClick={() => { logoutUser(); setOpen(false); }}
                     className="text-red-400 font-semibold text-left"
                   >
+                  {user.is_admin && (
+                  <Link to="/admin" className="text-primary font-semibold">
+                    🛡️ Admin
+                  </Link>
+                  )}
+                  
                     Déconnexion
                   </button>
                 </>
