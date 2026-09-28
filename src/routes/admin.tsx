@@ -3,14 +3,21 @@ import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import {
   Users, Camera, User, Images, Folder,
-  ShoppingBag, MessageSquare, Shield
+  ShoppingBag, MessageSquare, Shield, TrendingUp
 } from "lucide-react";
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, PieChart,
+  Pie, Cell, Legend
+} from "recharts";
 import { getAdminStats } from "@/lib/api/client";
 import { getCurrentUser } from "@/lib/api/auth";
 
 export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
+
+const COLORS = ["#e94560", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
 
 function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
@@ -57,6 +64,34 @@ function AdminDashboard() {
     { icon: MessageSquare, label: "Messages", value: stats?.total_messages, color: "bg-pink-500/10 text-pink-500" },
   ];
 
+  // Données pour les graphiques
+  const userDistributionData = [
+    { name: "Photographes", value: stats?.total_photographers || 0 },
+    { name: "Clients", value: stats?.total_clients || 0 },
+  ];
+
+  const platformData = [
+    { name: "Galeries", value: stats?.total_galleries || 0 },
+    { name: "Albums", value: stats?.total_albums || 0 },
+    { name: "Commandes", value: stats?.total_orders || 0 },
+    { name: "Messages", value: stats?.total_messages || 0 },
+  ];
+
+  const ordersStatusData = [
+    { name: "En attente", value: stats?.recent_orders?.filter((o: any) => o.status === "pending").length || 0 },
+    { name: "Confirmée", value: stats?.recent_orders?.filter((o: any) => o.status === "confirmed").length || 0 },
+    { name: "Terminée", value: stats?.recent_orders?.filter((o: any) => o.status === "completed").length || 0 },
+    { name: "Annulée", value: stats?.recent_orders?.filter((o: any) => o.status === "cancelled").length || 0 },
+  ];
+
+  const activityData = [
+    { name: "Utilisateurs", total: stats?.total_users || 0 },
+    { name: "Galeries", total: stats?.total_galleries || 0 },
+    { name: "Albums", total: stats?.total_albums || 0 },
+    { name: "Commandes", total: stats?.total_orders || 0 },
+    { name: "Messages", total: stats?.total_messages || 0 },
+  ];
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -74,7 +109,7 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Stats */}
+        {/* KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {statCards.map((s) => (
             <div key={s.label}
@@ -88,10 +123,129 @@ function AdminDashboard() {
           ))}
         </div>
 
+        {/* Graphiques ligne 1 */}
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+
+          {/* Répartition utilisateurs — Pie */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] p-6 border">
+            <h2 className="font-semibold mb-4 flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Répartition des utilisateurs
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={userDistributionData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {userDistributionData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "#1a1a2e", border: "none", borderRadius: "8px" }}
+                  labelStyle={{ color: "#fff" }}
+                />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Activité plateforme — Bar */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] p-6 border">
+            <h2 className="font-semibold mb-4 flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Activité de la plateforme
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={activityData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: "#888", fontSize: 12 }}
+                  axisLine={false}
+                />
+                <YAxis
+                  tick={{ fill: "#888", fontSize: 12 }}
+                  axisLine={false}
+                />
+                <Tooltip
+                  contentStyle={{ background: "#1a1a2e", border: "none", borderRadius: "8px" }}
+                  labelStyle={{ color: "#fff" }}
+                />
+                <Bar dataKey="total" fill="#e94560" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Graphiques ligne 2 */}
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+
+          {/* Contenu plateforme — Bar horizontal */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] p-6 border">
+            <h2 className="font-semibold mb-4 flex items-center gap-2">
+              <Folder className="h-5 w-5 text-primary" />
+              Contenu créé
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={platformData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                <XAxis type="number" tick={{ fill: "#888", fontSize: 12 }} axisLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#888", fontSize: 12 }} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ background: "#1a1a2e", border: "none", borderRadius: "8px" }}
+                  labelStyle={{ color: "#fff" }}
+                />
+                <Bar dataKey="value" radius={[0, 6, 6, 0]}>
+                  {platformData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Statut des commandes — Pie */}
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] p-6 border">
+            <h2 className="font-semibold mb-4 flex items-center gap-2">
+              <ShoppingBag className="h-5 w-5 text-primary" />
+              Statut des commandes
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={ordersStatusData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {ordersStatusData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "#1a1a2e", border: "none", borderRadius: "8px" }}
+                  labelStyle={{ color: "#fff" }}
+                />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Tableau derniers inscrits et commandes */}
         <div className="grid md:grid-cols-2 gap-6">
 
           {/* Derniers utilisateurs */}
-          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden border">
             <div className="px-5 py-4 border-b flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
               <h2 className="font-semibold">Derniers inscrits</h2>
@@ -132,7 +286,7 @@ function AdminDashboard() {
           </div>
 
           {/* Dernières commandes */}
-          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
+          <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden border">
             <div className="px-5 py-4 border-b flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-primary" />
               <h2 className="font-semibold">Dernières commandes</h2>

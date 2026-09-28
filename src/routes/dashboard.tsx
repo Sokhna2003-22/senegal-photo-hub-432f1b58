@@ -26,6 +26,12 @@ function Dashboard() {
       return;
     }
     setUser(u);
+
+    // Admin → dashboard admin
+    if (u.is_staff) {
+      navigate({ to: "/admin" });
+      return;
+    }
   }, [navigate]);
 
   if (!user) return null;
