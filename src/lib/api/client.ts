@@ -1,4 +1,4 @@
-const API_URL = "https://senegal-photo-hub-backend-production.up.railway.app/api";
+const API_URL = "https://sunuvision-backend.onrender.com/api";
 const getToken = () => localStorage.getItem("access_token");
 
 const PUBLIC_ENDPOINTS = [
