@@ -44,7 +44,7 @@ function PortfolioCreate() {
         Array.from(fileRef.current.files).forEach(f => formData.append("photos", f));
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/portfolio/my/", {
+      const response = await fetch("https://sunuvision-backend.onrender.com/api/portfolio/my/", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,
