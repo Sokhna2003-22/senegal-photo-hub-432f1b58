@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Camera, ImageIcon, Menu, User } from "lucide-react";
+import { ImageIcon, Menu, User } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AccessPhotosDialog } from "@/components/AccessPhotosDialog";
 import { getCurrentUser, logoutUser } from "@/lib/api/auth";
+import logoImg from "@/assets/logo.jpg";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -17,13 +18,13 @@ export function Navbar() {
   const user = getCurrentUser();
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-navy/95 backdrop-blur border-b border-white/10">
+    <header className="sticky top-0 z-50 w-full bg-navy/95 backdrop-blur border-b border-primary/20">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 text-white">
-          <Camera className="h-6 w-6 text-primary" />
-          <span className="font-bold text-lg tracking-tight">SunuVision</span>
+          <img src={logoImg} alt="SunuVision" className="h-10 w-10 rounded-full object-cover" />
+          <span className="font-bold text-lg tracking-tight text-primary">SunuVision</span>
         </Link>
 
         {/* Navigation desktop */}
@@ -76,7 +77,7 @@ export function Navbar() {
                   <User className="h-4 w-4 mr-1" />Connexion
                 </Link>
               </Button>
-              <Button asChild className="bg-primary hover:bg-primary-glow text-primary-foreground">
+              <Button asChild className="bg-primary hover:bg-primary-glow text-primary-foreground font-semibold">
                 <Link to="/register">S'inscrire</Link>
               </Button>
             </>
@@ -90,10 +91,10 @@ export function Navbar() {
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="bg-navy border-white/10">
+          <SheetContent side="right" className="bg-navy border-primary/20">
             <div className="flex items-center gap-2 mb-8">
-              <Camera className="h-5 w-5 text-primary" />
-              <span className="font-bold text-white text-lg">SunuVision</span>
+              <img src={logoImg} alt="SunuVision" className="h-9 w-9 rounded-full object-cover" />
+              <span className="font-bold text-primary text-lg">SunuVision</span>
             </div>
             <nav className="flex flex-col gap-4">
               {links.map((l) => (
@@ -106,7 +107,7 @@ export function Navbar() {
                   {l.label}
                 </Link>
               ))}
-              <hr className="border-white/10 my-2" />
+              <hr className="border-primary/20 my-2" />
               <AccessPhotosDialog
                 trigger={
                   <button
@@ -135,7 +136,7 @@ export function Navbar() {
                     🛡️ Admin
                   </Link>
                   )}
-                  
+
                     Déconnexion
                   </button>
                 </>
