@@ -35,9 +35,18 @@ export default defineConfig({
       // sait exécuter (dossier .vercel/output avec les fonctions serveur).
       // Sans ça, Lovable compile pour Cloudflare Workers et Vercel
       // ne trouve aucune page à servir.
-      nitro({ preset: "vercel" }),
+      nitro({
+      preset: "vercel",
+      rollupConfig: {
+        external: [],
+      },
+      externals: {
+        inline: ["tslib"],
+      },
+    }),
     ],
   },
 });
 
 // Build forcé - sunuvision-backend.onrender.com
+
