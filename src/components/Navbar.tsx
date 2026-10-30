@@ -1,10 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import { ImageIcon, Menu, User } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ImageIcon, Menu, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AccessPhotosDialog } from "@/components/AccessPhotosDialog";
-import { getCurrentUser, logoutUser } from "@/lib/api/auth";
+import { getCurrentUser, clearSession } from "@/lib/api/auth";
 import logoImg from "@/assets/logo.jpg";
 
 const links = [
@@ -16,6 +16,12 @@ const links = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const user = getCurrentUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearSession();
+    navigate({ to: "/" });
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-navy/95 backdrop-blur border-b border-primary/20">
@@ -65,9 +71,9 @@ export function Navbar() {
               <Button
                 variant="outline"
                 className="border-white/20 text-white hover:bg-white/10"
-                onClick={() => logoutUser()}
+                onClick={handleLogout}
               >
-                Déconnexion
+                <LogOut className="h-4 w-4 mr-1" />Déconnexion
               </Button>
             </>
           ) : (
@@ -120,24 +126,23 @@ export function Navbar() {
               />
               {user ? (
                 <>
+                  {user.is_staff && (
+                    <Link to="/admin" onClick={() => setOpen(false)} className="text-primary font-semibold">
+                      🛡️ Admin
+                    </Link>
+                  )}
                   <Link
                     to="/dashboard"
                     onClick={() => setOpen(false)}
                     className="text-white/90 hover:text-primary"
                   >
-                    👤 {user.first_name || user.username}
+                    <User className="h-4 w-4 inline mr-1" />{user.first_name || user.username}
                   </Link>
                   <button
-                    onClick={() => { logoutUser(); setOpen(false); }}
-                    className="text-red-400 font-semibold text-left"
+                    onClick={() => { handleLogout(); setOpen(false); }}
+                    className="text-red-400 font-semibold text-left flex items-center gap-1"
                   >
-                  {user.is_admin && (
-                  <Link to="/admin" className="text-primary font-semibold">
-                    🛡️ Admin
-                  </Link>
-                  )}
-
-                    Déconnexion
+                    <LogOut className="h-4 w-4" />Déconnexion
                   </button>
                 </>
               ) : (

@@ -34,14 +34,17 @@ export const registerUser = async (formData: any) => {
     throw new Error(errorMsg || "Erreur d'inscription");
 };
 
-export const logoutUser = () => {
+// Efface la session — la navigation vers "/" est gérée par le composant appelant
+export const clearSession = () => {
     if (isBrowser) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("user");
-        window.location.href = "/";
     }
 };
+
+// Gardé pour compatibilité — utilise clearSession + navigate dans les composants
+export const logoutUser = clearSession;
 
 export const getCurrentUser = () => {
     if (!isBrowser) return null;

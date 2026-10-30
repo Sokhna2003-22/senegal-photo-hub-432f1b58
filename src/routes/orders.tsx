@@ -2,7 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, ChevronDown } from "lucide-react";
+import {
+  ShoppingBag, UserCircle2, CalendarDays, MapPin,
+  BadgeCheck, XCircle, Trophy, Clock, Banknote, Camera,
+} from "lucide-react";
 import { getMyOrders, updateOrder } from "@/lib/api/client";
 import { getCurrentUser } from "@/lib/api/auth";
 
@@ -11,10 +14,10 @@ export const Route = createFileRoute("/orders")({
 });
 
 const STATUS_CONFIG: Record<string, { label: string; class: string }> = {
-  pending:   { label: "En attente",  class: "bg-yellow-100 text-yellow-700" },
-  confirmed: { label: "Confirmée",   class: "bg-blue-100 text-blue-700" },
-  completed: { label: "Terminée",    class: "bg-green-100 text-green-700" },
-  cancelled: { label: "Annulée",     class: "bg-red-100 text-red-700" },
+  pending:   { label: "En attente",  class: "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30" },
+  confirmed: { label: "Confirmée",   class: "bg-blue-500/15 text-blue-400 border border-blue-500/30" },
+  completed: { label: "Terminée",    class: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" },
+  cancelled: { label: "Annulée",     class: "bg-red-500/15 text-red-400 border border-red-500/30" },
 };
 
 function OrdersPage() {
@@ -73,12 +76,12 @@ function OrdersPage() {
           <div className="space-y-4">
             {orders.map((o: any) => (
               <div key={o.id}
-                   className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden">
+                   className="bg-card rounded-xl shadow-[var(--shadow-card)] overflow-hidden border border-border/50">
                 {/* Header */}
-                <div className="px-5 py-4 border-b flex flex-wrap justify-between items-center gap-3">
-                  <div>
+                <div className="px-5 py-4 border-b border-border/50 flex flex-wrap justify-between items-center gap-3">
+                  <div className="flex items-center gap-3">
                     <span className="font-bold text-lg">{o.service_type}</span>
-                    <span className={`ml-3 text-xs px-3 py-1 rounded-full font-medium ${STATUS_CONFIG[o.status]?.class}`}>
+                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${STATUS_CONFIG[o.status]?.class}`}>
                       {STATUS_CONFIG[o.status]?.label}
                     </span>
                   </div>
@@ -89,22 +92,37 @@ function OrdersPage() {
 
                 {/* Infos */}
                 <div className="px-5 py-4 grid sm:grid-cols-2 gap-3 text-sm">
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {user?.role === "photographer" ? (
-                      <p>👤 <span className="font-medium">
-                        {o.client?.first_name} {o.client?.last_name || o.client?.username}
-                      </span></p>
+                      <p className="flex items-center gap-2 text-muted-foreground">
+                        <UserCircle2 className="h-4 w-4 text-primary shrink-0" />
+                        <span className="font-medium text-foreground">
+                          {o.client?.first_name} {o.client?.last_name || o.client?.username}
+                        </span>
+                      </p>
                     ) : (
-                      <p>📸 <span className="font-medium">
-                        {o.photographer?.first_name} {o.photographer?.last_name || o.photographer?.username}
-                      </span></p>
+                      <p className="flex items-center gap-2 text-muted-foreground">
+                        <Camera className="h-4 w-4 text-primary shrink-0" />
+                        <span className="font-medium text-foreground">
+                          {o.photographer?.first_name} {o.photographer?.last_name || o.photographer?.username}
+                        </span>
+                      </p>
                     )}
-                    <p>📅 <span className="font-medium">{o.event_date}</span></p>
-                    <p>📍 <span className="font-medium">{o.location}</span></p>
+                    <p className="flex items-center gap-2 text-muted-foreground">
+                      <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                      <span className="font-medium text-foreground">{o.event_date}</span>
+                    </p>
+                    <p className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4 text-primary shrink-0" />
+                      <span className="font-medium text-foreground">{o.location}</span>
+                    </p>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {o.price && (
-                      <p>💰 <span className="font-bold text-green-600">{o.price} FCFA</span></p>
+                      <p className="flex items-center gap-2">
+                        <Banknote className="h-4 w-4 text-emerald-500 shrink-0" />
+                        <span className="font-bold text-emerald-500">{o.price} FCFA</span>
+                      </p>
                     )}
                     {o.message && (
                       <p className="text-muted-foreground italic">"{o.message}"</p>
@@ -114,8 +132,8 @@ function OrdersPage() {
 
                 {/* Actions photographe */}
                 {user?.role === "photographer" && o.status !== "completed" && o.status !== "cancelled" && (
-                  <div className="px-5 py-4 border-t bg-muted/30">
-                    <p className="text-sm font-semibold mb-3">Gérer cette commande :</p>
+                  <div className="px-5 py-4 border-t border-border/50 bg-muted/20">
+                    <p className="text-sm font-semibold mb-3 text-muted-foreground">Gérer cette commande :</p>
                     <div className="flex flex-wrap gap-3 items-end">
                       {/* Prix */}
                       <div>
@@ -137,42 +155,69 @@ function OrdersPage() {
                       {o.status === "pending" && (
                         <>
                           <Button
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            className="bg-primary hover:bg-primary-glow text-primary-foreground font-semibold shadow-sm"
                             disabled={updating === o.id}
                             onClick={() => handleStatusChange(o.id, "confirmed")}
                           >
-                            {updating === o.id ? "..." : "✅ Confirmer"}
+                            {updating === o.id ? (
+                              <Clock className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <BadgeCheck className="h-4 w-4 mr-2" />
+                            )}
+                            Confirmer
                           </Button>
                           <Button
                             variant="outline"
-                            className="border-red-500 text-red-500 hover:bg-red-50"
+                            className="border-red-500/60 text-red-400 hover:bg-red-500/10 hover:border-red-500"
                             disabled={updating === o.id}
                             onClick={() => handleStatusChange(o.id, "cancelled")}
                           >
-                            ❌ Annuler
+                            <XCircle className="h-4 w-4 mr-2" />
+                            Annuler
                           </Button>
                         </>
                       )}
                       {o.status === "confirmed" && (
                         <Button
-                          className="bg-green-600 hover:bg-green-700 text-white"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm"
                           disabled={updating === o.id}
                           onClick={() => handleStatusChange(o.id, "completed")}
                         >
-                          {updating === o.id ? "..." : "🎉 Marquer comme terminée"}
+                          {updating === o.id ? (
+                            <Clock className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Trophy className="h-4 w-4 mr-2" />
+                          )}
+                          Marquer comme terminée
                         </Button>
                       )}
                     </div>
                   </div>
                 )}
 
-                {/* Message client si annulée ou terminée */}
+                {/* Message client */}
                 {user?.role === "client" && (
-                  <div className="px-5 py-3 border-t bg-muted/20 text-sm text-muted-foreground">
-                    {o.status === "pending" && "⏳ En attente de confirmation du photographe."}
-                    {o.status === "confirmed" && "✅ Votre réservation est confirmée !"}
-                    {o.status === "completed" && "🎉 Séance terminée. Merci !"}
-                    {o.status === "cancelled" && "❌ Cette réservation a été annulée."}
+                  <div className="px-5 py-3 border-t border-border/50 bg-muted/10">
+                    {o.status === "pending" && (
+                      <p className="text-sm text-yellow-400 flex items-center gap-2">
+                        <Clock className="h-4 w-4" />En attente de confirmation du photographe.
+                      </p>
+                    )}
+                    {o.status === "confirmed" && (
+                      <p className="text-sm text-blue-400 flex items-center gap-2">
+                        <BadgeCheck className="h-4 w-4" />Votre réservation est confirmée !
+                      </p>
+                    )}
+                    {o.status === "completed" && (
+                      <p className="text-sm text-emerald-400 flex items-center gap-2">
+                        <Trophy className="h-4 w-4" />Séance terminée. Merci !
+                      </p>
+                    )}
+                    {o.status === "cancelled" && (
+                      <p className="text-sm text-red-400 flex items-center gap-2">
+                        <XCircle className="h-4 w-4" />Cette réservation a été annulée.
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
