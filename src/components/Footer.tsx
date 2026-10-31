@@ -1,14 +1,14 @@
-import { Camera, Mail, Phone, MapPin } from "lucide-react";
+﻿import { Camera, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export function Footer() {
   return (
     <footer className="bg-navy-deep text-white/80 mt-20">
-      <div className="container mx-auto px-8 py-12">
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+      <div className="mx-auto px-12 py-12 max-w-6xl">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
 
           {/* Logo */}
-          <div className="md:pl-4">
+          <div>
             <div className="flex items-center gap-2 mb-4 text-white">
               <Camera className="h-5 w-5 text-primary" />
               <span className="font-bold text-lg">SunuVision</span>
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
 
           {/* Explorer */}
-          <div className="md:pl-8">
+          <div>
             <h4 className="text-white font-semibold mb-4">Explorer</h4>
             <ul className="space-y-2 text-sm">
               <li>
@@ -55,7 +55,7 @@ export function Footer() {
           </div>
 
           {/* Compte */}
-          <div className="md:pl-8">
+          <div>
             <h4 className="text-white font-semibold mb-4">Mon compte</h4>
             <ul className="space-y-2 text-sm">
               <li>
@@ -87,9 +87,9 @@ export function Footer() {
           </div>
 
           {/* Réseaux sociaux */}
-          <div className="md:pl-8">
+          <div>
             <h4 className="text-white font-semibold mb-4">Suivez-nous</h4>
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => window.open("https://instagram.com", "_blank")}
@@ -121,26 +121,13 @@ export function Footer() {
                 </svg>
               </button>
             </div>
-            <div className="bg-primary/10 border border-primary/30 rounded-xl p-4">
-              <p className="text-sm font-semibold text-white mb-1">
-                📸 Accéder à mes photos
-              </p>
-              <p className="text-xs text-white/60 mb-3">
-                Entrez votre code pour voir vos photos
-              </p>
-              <Link
-                to="/login"
-                className="text-xs bg-primary hover:bg-primary/80 text-white px-3 py-1.5 rounded-lg inline-block transition-colors"
-              >
-                Accéder maintenant
-              </Link>
-            </div>
           </div>
+
         </div>
       </div>
 
       <div className="border-t border-white/10 py-4 text-center text-xs text-white/50">
-        © {new Date().getFullYear()} SunuVision — Sénégal. Tous droits réservés. Fait avec ❤️ au Sénégal
+        © {new Date().getFullYear()} SunuVision — Sénégal. Tous droits réservés. Fait avec ❤ au Sénégal
       </div>
     </footer>
   );
