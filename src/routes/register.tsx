@@ -1,14 +1,14 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Camera, Eye, EyeOff } from "lucide-react";
+import { Camera, Eye, EyeOff, User } from "lucide-react";
 import { useState } from "react";
 import { registerUser } from "@/lib/api/auth";
 
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Inscription — PhotoPlatform" }] }),
+  head: () => ({ meta: [{ title: "Inscription â€” PhotoPlatform" }] }),
   validateSearch: (s: Record<string, unknown>) => ({
     role: s.role === "photographer" ? "photographer" as const : undefined,
   }),
@@ -55,7 +55,7 @@ function Register() {
       });
       navigate({ to: "/dashboard" });
     } catch (err: any) {
-      setError(err.message || "Erreur lors de l'inscription. Vérifiez vos informations.");
+      setError(err.message || "Erreur lors de l'inscription. VÃ©rifiez vos informations.");
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ function Register() {
   return (
     <Layout>
       <div className="min-h-[80vh] grid place-items-center px-4 py-12 relative">
-        {/* Image d'arrière-plan */}
+        {/* Image d'arriÃ¨re-plan */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1600&q=80)" }}
@@ -79,10 +79,10 @@ function Register() {
           </div>
 
           <h1 className="text-2xl font-bold text-center">
-            {lockRole ? "Devenir photographe" : "Créer un compte"}
+            {lockRole ? "Devenir photographe" : "CrÃ©er un compte"}
           </h1>
 
-          {/* Sélecteur de rôle */}
+          {/* SÃ©lecteur de rÃ´le */}
           {!lockRole && (
             <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
               {(["client", "photographer"] as const).map((r) => (
@@ -96,17 +96,17 @@ function Register() {
                       : "text-muted-foreground"
                   }`}
                 >
-                  {r === "client" ? "👤 Client" : "📸 Photographe"}
+                  {r === "client" ? (<span className="flex items-center justify-center gap-2"><User className="h-4 w-4" /> Client</span>) : (<span className="flex items-center justify-center gap-2"><Camera className="h-4 w-4" /> Photographe</span>)}
                 </button>
               ))}
             </div>
           )}
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            {/* Prénom + Nom */}
+            {/* PrÃ©nom + Nom */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="firstName">Prénom</Label>
+                <Label htmlFor="firstName">PrÃ©nom</Label>
                 <Input
                   id="firstName"
                   value={firstName}
@@ -153,9 +153,9 @@ function Register() {
               />
             </div>
 
-            {/* Téléphone */}
+            {/* TÃ©lÃ©phone */}
             <div>
-              <Label htmlFor="phone">Téléphone</Label>
+              <Label htmlFor="phone">TÃ©lÃ©phone</Label>
               <Input
                 id="phone"
                 value={phone}
@@ -165,7 +165,7 @@ function Register() {
               />
             </div>
 
-            {/* Ville — photographe seulement */}
+            {/* Ville â€” photographe seulement */}
             {role === "photographer" && (
               <div>
                 <Label htmlFor="city">Ville</Label>
@@ -188,7 +188,7 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   className="pr-10"
                   required
                 />
@@ -213,7 +213,7 @@ function Register() {
                   type={showPassword2 ? "text" : "password"}
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   className="pr-10"
                   required
                 />
@@ -240,12 +240,12 @@ function Register() {
               className="w-full bg-primary hover:bg-primary-glow text-primary-foreground"
               disabled={loading}
             >
-              {loading ? "Création en cours..." : "Créer mon compte"}
+              {loading ? "CrÃ©ation en cours..." : "CrÃ©er mon compte"}
             </Button>
           </form>
 
           <p className="text-sm text-center mt-6 text-muted-foreground">
-            Déjà inscrit ?{" "}
+            DÃ©jÃ  inscrit ?{" "}
             <Link to="/login" className="text-primary font-medium">
               Se connecter
             </Link>
@@ -255,3 +255,4 @@ function Register() {
     </Layout>
   );
 }
+
