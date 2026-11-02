@@ -3,17 +3,32 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Camera, Eye, EyeOff, User } from "lucide-react";
+import { Camera, Eye, EyeOff, User, CheckCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 import { registerUser } from "@/lib/api/auth";
 
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Inscription â€” PhotoPlatform" }] }),
+  head: () => ({ meta: [{ title: "Inscription - SunuVision" }] }),
   validateSearch: (s: Record<string, unknown>) => ({
     role: s.role === "photographer" ? "photographer" as const : undefined,
   }),
   component: Register,
 });
+
+function validateEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone: string) {
+  return /^(\+221|00221)?[0-9]{9}$/.test(phone.replace(/\s/g, ""));
+}
+
+function FieldStatus({ value, validator }: { value: string; validator: (v: string) => boolean }) {
+  if (!value) return null;
+  return validator(value)
+    ? <CheckCircle className="h-4 w-4 text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+    : <XCircle className="h-4 w-4 text-red-500 absolute right-3 top-1/2 -translate-y-1/2" />;
+}
 
 function Register() {
   const { role: forcedRole } = Route.useSearch();
@@ -37,10 +52,24 @@ function Register() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (email && !validateEmail(email)) {
+      setError("Adresse email invalide.");
+      return;
+    }
+    if (phone && !validatePhone(phone)) {
+      setError("Numéro de téléphone invalide (ex: +221 77 000 00 00).");
+      return;
+    }
     if (password !== password2) {
       setError("Les mots de passe ne correspondent pas.");
       return;
     }
+    if (password.length < 8) {
+      setError("Le mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+
     setLoading(true);
     try {
       await registerUser({
@@ -55,23 +84,23 @@ function Register() {
       });
       navigate({ to: "/dashboard" });
     } catch (err: any) {
-      setError(err.message || "Erreur lors de l'inscription. VÃ©rifiez vos informations.");
+      setError(err.message || "Erreur lors de l'inscription. Vérifiez vos informations.");
     } finally {
       setLoading(false);
     }
   }
 
+  const isClient = role === "client";
+
   return (
     <Layout>
       <div className="min-h-[80vh] grid place-items-center px-4 py-12 relative">
-        {/* Image d'arriÃ¨re-plan */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1600&q=80)" }}
         />
         <div className="absolute inset-0 bg-black/65" />
 
-        {/* Formulaire */}
         <div className="relative z-10 w-full max-w-md bg-card/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
           <div className="flex items-center gap-2 justify-center mb-6">
             <Camera className="h-6 w-6 text-primary" />
@@ -79,10 +108,10 @@ function Register() {
           </div>
 
           <h1 className="text-2xl font-bold text-center">
-            {lockRole ? "Devenir photographe" : "CrÃ©er un compte"}
+            {lockRole ? "Devenir photographe" : "Créer un compte"}
           </h1>
 
-          {/* SÃ©lecteur de rÃ´le */}
+          {/* Sélecteur de rôle */}
           {!lockRole && (
             <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
               {(["client", "photographer"] as const).map((r) => (
@@ -90,23 +119,33 @@ function Register() {
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
-                  className={`py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`py-2.5 rounded-md text-sm font-semibold transition-all ${
                     role === r
-                      ? "bg-card shadow-sm text-foreground"
-                      : "text-muted-foreground"
+                      ? "bg-primary text-black shadow-sm"
+                      : "text-white/60 hover:text-white"
                   }`}
                 >
-                  {r === "client" ? (<span className="flex items-center justify-center gap-2"><User className="h-4 w-4" /> Client</span>) : (<span className="flex items-center justify-center gap-2"><Camera className="h-4 w-4" /> Photographe</span>)}
+                  {r === "client" ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <User className={`h-4 w-4 ${role === r ? "text-black" : "text-primary"}`} />
+                      Client
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      <Camera className={`h-4 w-4 ${role === r ? "text-black" : "text-primary"}`} />
+                      Photographe
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
           )}
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            {/* PrÃ©nom + Nom */}
+            {/* Prénom + Nom */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="firstName">PrÃ©nom</Label>
+                <Label htmlFor="firstName">Prénom</Label>
                 <Input
                   id="firstName"
                   value={firstName}
@@ -140,33 +179,59 @@ function Register() {
               />
             </div>
 
-            {/* Email */}
+            {/* Téléphone — tous les rôles */}
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1"
-                required
-              />
+              <Label htmlFor="phone">Téléphone</Label>
+              <div className="relative mt-1">
+                <Input
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+221 77 000 00 00"
+                  className="pr-10"
+                />
+                <FieldStatus value={phone} validator={validatePhone} />
+              </div>
             </div>
 
-            {/* TÃ©lÃ©phone */}
-            <div>
-              <Label htmlFor="phone">TÃ©lÃ©phone</Label>
-              <Input
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+221 77 000 00 00"
-                className="mt-1"
-              />
-            </div>
+            {/* Email — photographe seulement */}
+            {!isClient && (
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pr-10"
+                    required={!isClient}
+                  />
+                  <FieldStatus value={email} validator={validateEmail} />
+                </div>
+              </div>
+            )}
 
-            {/* Ville â€” photographe seulement */}
-            {role === "photographer" && (
+            {/* Email — client aussi */}
+            {isClient && (
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <div className="relative mt-1">
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pr-10"
+                    required
+                  />
+                  <FieldStatus value={email} validator={validateEmail} />
+                </div>
+              </div>
+            )}
+
+            {/* Ville — photographe seulement */}
+            {!isClient && (
               <div>
                 <Label htmlFor="city">Ville</Label>
                 <Input
@@ -188,7 +253,7 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="pr-10"
                   required
                 />
@@ -197,11 +262,12 @@ function Register() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword
-                    ? <EyeOff className="h-4 w-4" />
-                    : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {password && password.length < 8 && (
+                <p className="text-xs text-red-500 mt-1">Au moins 8 caractères requis</p>
+              )}
             </div>
 
             {/* Confirmer mot de passe */}
@@ -213,7 +279,7 @@ function Register() {
                   type={showPassword2 ? "text" : "password"}
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="pr-10"
                   required
                 />
@@ -222,11 +288,12 @@ function Register() {
                   onClick={() => setShowPassword2(!showPassword2)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword2
-                    ? <EyeOff className="h-4 w-4" />
-                    : <Eye className="h-4 w-4" />}
+                  {showPassword2 ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {password2 && password !== password2 && (
+                <p className="text-xs text-red-500 mt-1">Les mots de passe ne correspondent pas</p>
+              )}
             </div>
 
             {error && (
@@ -237,15 +304,15 @@ function Register() {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary-glow text-primary-foreground"
+              className="w-full bg-primary hover:bg-primary/80 text-black font-semibold"
               disabled={loading}
             >
-              {loading ? "CrÃ©ation en cours..." : "CrÃ©er mon compte"}
+              {loading ? "Création en cours..." : "Créer mon compte"}
             </Button>
           </form>
 
           <p className="text-sm text-center mt-6 text-muted-foreground">
-            DÃ©jÃ  inscrit ?{" "}
+            Déjà inscrit ?{" "}
             <Link to="/login" className="text-primary font-medium">
               Se connecter
             </Link>
@@ -255,4 +322,3 @@ function Register() {
     </Layout>
   );
 }
-
