@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+ï»¿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ function Login() {
         navigate({ to: "/dashboard" });
       }
     } catch (err: any) {
-      setError("Identifiants incorrects. Vérifiez votre nom d'utilisateur et mot de passe.");
+      setError("Identifiants incorrects. VÃ©rifiez votre nom d'utilisateur et mot de passe.");
     } finally {
       setLoading(false);
     }
@@ -49,8 +49,7 @@ function Login() {
     setLoading(false);
   }
 
-  <button onClick={() => window.history.back()} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 mt-6"><svg xmlns=""http://www.w3.org/2000/svg"" width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" stroke=""currentColor"" strokeWidth=""2"" strokeLinecap=""round"" strokeLinejoin=""round""><path d=""m12 19-7-7 7-7""/><path d=""M19 12H5""/></svg> Retour</button>
-return (
+  return (
     <Layout>
       <div className="min-h-[80vh] grid place-items-center px-4 py-12 relative">
         <div
@@ -65,20 +64,20 @@ return (
             <span className="font-bold text-lg">SunuVision</span>
           </div>
 
-          {/* Mode mot de passe oublié */}
+          {/* Mode mot de passe oubliÃ© */}
           {forgotMode ? (
             <>
-              <h1 className="text-2xl font-bold text-center">Mot de passe oublié</h1>
+              <h1 className="text-2xl font-bold text-center">Mot de passe oubliÃ©</h1>
               <p className="text-sm text-muted-foreground text-center mt-1">
-                Entrez votre email pour recevoir un lien de réinitialisation
+                Entrez votre email pour recevoir un lien de rÃ©initialisation
               </p>
 
               {forgotSent ? (
                 <div className="mt-6 text-center space-y-4">
                   <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                    <p className="text-green-400 text-sm font-medium">Email envoyé !</p>
+                    <p className="text-green-400 text-sm font-medium">Email envoyÃ© !</p>
                     <p className="text-white/60 text-xs mt-1">
-                      Vérifiez votre boîte mail et suivez le lien pour réinitialiser votre mot de passe.
+                      VÃ©rifiez votre boÃ®te mail et suivez le lien pour rÃ©initialiser votre mot de passe.
                     </p>
                   </div>
                   <button
@@ -86,7 +85,7 @@ return (
                     onClick={() => { setForgotMode(false); setForgotSent(false); setForgotEmail(""); }}
                     className="text-primary text-sm font-medium hover:underline"
                   >
-                    Retour à la connexion
+                    Retour Ã  la connexion
                   </button>
                 </div>
               ) : (
@@ -115,7 +114,7 @@ return (
                     onClick={() => setForgotMode(false)}
                     className="w-full text-sm text-muted-foreground hover:text-white transition-colors"
                   >
-                    Retour à la connexion
+                    Retour Ã  la connexion
                   </button>
                 </form>
               )}
@@ -124,7 +123,7 @@ return (
             <>
               <h1 className="text-2xl font-bold text-center">Connexion</h1>
               <p className="text-sm text-muted-foreground text-center mt-1">
-                Accédez à votre espace
+                AccÃ©dez Ã  votre espace
               </p>
 
               <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
@@ -149,7 +148,7 @@ return (
                       onClick={() => setForgotMode(true)}
                       className="text-xs text-primary hover:underline"
                     >
-                      Mot de passe oublié ?
+                      Mot de passe oubliÃ© ?
                     </button>
                   </div>
                   <div className="relative mt-1">
@@ -158,7 +157,7 @@ return (
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
+                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                       className="pr-10"
                       required
                     />

@@ -39,8 +39,6 @@ function GalleryDetail() {
   }
 
   if (loading) return (
-    <>
-    <button onClick={() => window.history.back()} style={{"display":"flex","alignItems":"center","gap":"8px","background":"none","border":"none","cursor":"pointer","color":"#666","marginBottom":"16px","padding":"8px"}}>← Retour</button>
     <Layout><div className="container mx-auto px-4 py-20 text-center text-muted-foreground">Chargement...</div></Layout>
   );
 

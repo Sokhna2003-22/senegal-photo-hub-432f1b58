@@ -14,8 +14,6 @@ export const Route = createFileRoute("/about")({
 
 function About() {
   return (
-    <>
-    <button onClick={() => window.history.back()} style={{"display":"flex","alignItems":"center","gap":"8px","background":"none","border":"none","cursor":"pointer","color":"#666","marginBottom":"16px","padding":"8px"}}>← Retour</button>
     <Layout>
       <section className="bg-navy text-white py-20 border-b-4 border-primary">
         <div className="container mx-auto px-4 max-w-3xl text-center">
