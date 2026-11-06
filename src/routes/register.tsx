@@ -1,4 +1,4 @@
-ï»¿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +58,7 @@ function Register() {
       return;
     }
     if (phone && !validatePhone(phone)) {
-      setError("NumÃ©ro de tÃ©lÃ©phone invalide (ex: +221 77 000 00 00).");
+      setError("Numéro de téléphone invalide (ex: +221 77 000 00 00).");
       return;
     }
     if (password !== password2) {
@@ -66,7 +66,7 @@ function Register() {
       return;
     }
     if (password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractÃ¨res.");
+      setError("Le mot de passe doit contenir au moins 8 caractères.");
       return;
     }
 
@@ -84,7 +84,7 @@ function Register() {
       });
       navigate({ to: "/dashboard" });
     } catch (err: any) {
-      setError(err.message || "Erreur lors de l'inscription. VÃ©rifiez vos informations.");
+      setError(err.message || "Erreur lors de l'inscription. Vérifiez vos informations.");
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,8 @@ function Register() {
 
   const isClient = role === "client";
 
-  return (
+  <button onClick={() => window.history.back()} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 mt-6"><svg xmlns=""http://www.w3.org/2000/svg"" width=""16"" height=""16"" viewBox=""0 0 24 24"" fill=""none"" stroke=""currentColor"" strokeWidth=""2"" strokeLinecap=""round"" strokeLinejoin=""round""><path d=""m12 19-7-7 7-7""/><path d=""M19 12H5""/></svg> Retour</button>
+return (
     <Layout>
       <div className="min-h-[80vh] grid place-items-center px-4 py-12 relative">
         <div
@@ -108,10 +109,10 @@ function Register() {
           </div>
 
           <h1 className="text-2xl font-bold text-center">
-            {lockRole ? "Devenir photographe" : "CrÃ©er un compte"}
+            {lockRole ? "Devenir photographe" : "Créer un compte"}
           </h1>
 
-          {/* SÃ©lecteur de rÃ´le */}
+          {/* Sélecteur de rôle */}
           {!lockRole && (
             <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
               {(["client", "photographer"] as const).map((r) => (
@@ -142,10 +143,10 @@ function Register() {
           )}
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            {/* PrÃ©nom + Nom */}
+            {/* Prénom + Nom */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="firstName">PrÃ©nom</Label>
+                <Label htmlFor="firstName">Prénom</Label>
                 <Input
                   id="firstName"
                   value={firstName}
@@ -179,9 +180,9 @@ function Register() {
               />
             </div>
 
-            {/* TÃ©lÃ©phone â€” tous les rÃ´les */}
+            {/* Téléphone — tous les rôles */}
             <div>
-              <Label htmlFor="phone">TÃ©lÃ©phone</Label>
+              <Label htmlFor="phone">Téléphone</Label>
               <div className="relative mt-1">
                 <Input
                   id="phone"
@@ -194,7 +195,7 @@ function Register() {
               </div>
             </div>
 
-            {/* Email â€” photographe seulement */}
+            {/* Email — photographe seulement */}
             {!isClient && (
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -212,7 +213,7 @@ function Register() {
               </div>
             )}
 
-            {/* Email â€” client aussi */}
+            {/* Email — client aussi */}
             {isClient && (
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -230,7 +231,7 @@ function Register() {
               </div>
             )}
 
-            {/* Ville â€” photographe seulement */}
+            {/* Ville — photographe seulement */}
             {!isClient && (
               <div>
                 <Label htmlFor="city">Ville</Label>
@@ -253,7 +254,7 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="pr-10"
                   required
                 />
@@ -266,7 +267,7 @@ function Register() {
                 </button>
               </div>
               {password && password.length < 8 && (
-                <p className="text-xs text-red-500 mt-1">Au moins 8 caractÃ¨res requis</p>
+                <p className="text-xs text-red-500 mt-1">Au moins 8 caractères requis</p>
               )}
             </div>
 
@@ -279,7 +280,7 @@ function Register() {
                   type={showPassword2 ? "text" : "password"}
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                  placeholder="••••••••"
                   className="pr-10"
                   required
                 />
@@ -307,12 +308,12 @@ function Register() {
               className="w-full bg-primary hover:bg-primary/80 text-black font-semibold"
               disabled={loading}
             >
-              {loading ? "CrÃ©ation en cours..." : "CrÃ©er mon compte"}
+              {loading ? "Création en cours..." : "Créer mon compte"}
             </Button>
           </form>
 
           <p className="text-sm text-center mt-6 text-muted-foreground">
-            DÃ©jÃ  inscrit ?{" "}
+            Déjà inscrit ?{" "}
             <Link to="/login" className="text-primary font-medium">
               Se connecter
             </Link>
