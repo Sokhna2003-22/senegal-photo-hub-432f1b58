@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { BadgeCheck, Camera, Mail, MapPin, MessageSquare } from "lucide-react";
@@ -74,8 +74,7 @@ function PhotographerDetail() {
     : photographer.username;
 
   return (
-    <Layout>
-      {/* Cover */}
+    <Layout><div style={{padding:"16px"}}><button onClick={() => window.history.back()} style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px"}}>&#8592; Retour</button></div>{/* Cover */}
       <div className="h-48 md:h-64 relative"
            style={{ background: "var(--gradient-hero)" }}>
         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-transparent" />

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Camera, Heart, Shield, Users } from "lucide-react";
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <Layout>
-      <section className="bg-navy text-white py-20 border-b-4 border-primary">
+      <div style={{padding:"16px"}}><button onClick={() => window.history.back()} style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px"}}>&#8592; Retour</button></div><section className="bg-navy text-white py-20 border-b-4 border-primary">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <h1 className="text-4xl md:text-5xl font-bold">Notre <span className="text-primary">mission</span></h1>
           <p className="mt-4 text-white/80 text-lg">Valoriser le talent des photographes sénégalais et faciliter la rencontre avec ceux qui cherchent à immortaliser leurs moments précieux.</p>

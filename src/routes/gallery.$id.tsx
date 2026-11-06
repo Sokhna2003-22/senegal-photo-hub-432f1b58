@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -47,8 +47,7 @@ function GalleryDetail() {
   );
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
+    <Layout><div style={{padding:"16px 0"}}><button onClick={() => window.history.back()} style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px"}}>&#8592; Retour</button></div><div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

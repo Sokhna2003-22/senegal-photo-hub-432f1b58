@@ -58,7 +58,7 @@ function Register() {
       return;
     }
     if (phone && !validatePhone(phone)) {
-      setError("Numéro de téléphone invalide (ex: +221 77 000 00 00).");
+      setError("Numro de tlphone invalide (ex: +221 77 000 00 00).");
       return;
     }
     if (password !== password2) {
@@ -66,7 +66,7 @@ function Register() {
       return;
     }
     if (password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractères.");
+      setError("Le mot de passe doit contenir au moins 8 caractres.");
       return;
     }
 
@@ -84,7 +84,7 @@ function Register() {
       });
       navigate({ to: "/dashboard" });
     } catch (err: any) {
-      setError(err.message || "Erreur lors de l'inscription. Vérifiez vos informations.");
+      setError(err.message || "Erreur lors de l'inscription. Vrifiez vos informations.");
     } finally {
       setLoading(false);
     }
@@ -101,17 +101,17 @@ function Register() {
         />
         <div className="absolute inset-0 bg-black/65" />
 
-        <div className="relative z-10 w-full max-w-md bg-card/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+        <div className="relative z-10 w-full max-w-md bg-card/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl"><button onClick={() => window.history.back()} style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",cursor:"pointer",color:"#aaa",marginBottom:"16px",fontSize:"14px"}}>&#8592; Retour</button>
           <div className="flex items-center gap-2 justify-center mb-6">
             <Camera className="h-6 w-6 text-primary" />
             <span className="font-bold text-lg">SunuVision</span>
           </div>
 
           <h1 className="text-2xl font-bold text-center">
-            {lockRole ? "Devenir photographe" : "Créer un compte"}
+            {lockRole ? "Devenir photographe" : "Crer un compte"}
           </h1>
 
-          {/* Sélecteur de rôle */}
+          {/* Slecteur de rle */}
           {!lockRole && (
             <div className="grid grid-cols-2 gap-2 mt-5 p-1 bg-muted rounded-lg">
               {(["client", "photographer"] as const).map((r) => (
@@ -142,10 +142,10 @@ function Register() {
           )}
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            {/* Prénom + Nom */}
+            {/* Prnom + Nom */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="firstName">Prénom</Label>
+                <Label htmlFor="firstName">Prnom</Label>
                 <Input
                   id="firstName"
                   value={firstName}
@@ -179,9 +179,9 @@ function Register() {
               />
             </div>
 
-            {/* Téléphone — tous les rôles */}
+            {/* Tlphone  tous les rles */}
             <div>
-              <Label htmlFor="phone">Téléphone</Label>
+              <Label htmlFor="phone">Tlphone</Label>
               <div className="relative mt-1">
                 <Input
                   id="phone"
@@ -194,7 +194,7 @@ function Register() {
               </div>
             </div>
 
-            {/* Email — photographe seulement */}
+            {/* Email  photographe seulement */}
             {!isClient && (
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -212,7 +212,7 @@ function Register() {
               </div>
             )}
 
-            {/* Email — client aussi */}
+            {/* Email  client aussi */}
             {isClient && (
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -230,7 +230,7 @@ function Register() {
               </div>
             )}
 
-            {/* Ville — photographe seulement */}
+            {/* Ville  photographe seulement */}
             {!isClient && (
               <div>
                 <Label htmlFor="city">Ville</Label>
@@ -253,7 +253,7 @@ function Register() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder=""
                   className="pr-10"
                   required
                 />
@@ -266,7 +266,7 @@ function Register() {
                 </button>
               </div>
               {password && password.length < 8 && (
-                <p className="text-xs text-red-500 mt-1">Au moins 8 caractères requis</p>
+                <p className="text-xs text-red-500 mt-1">Au moins 8 caractres requis</p>
               )}
             </div>
 
@@ -279,7 +279,7 @@ function Register() {
                   type={showPassword2 ? "text" : "password"}
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder=""
                   className="pr-10"
                   required
                 />
@@ -307,12 +307,12 @@ function Register() {
               className="w-full bg-primary hover:bg-primary/80 text-black font-semibold"
               disabled={loading}
             >
-              {loading ? "Création en cours..." : "Créer mon compte"}
+              {loading ? "Cration en cours..." : "Crer mon compte"}
             </Button>
           </form>
 
           <p className="text-sm text-center mt-6 text-muted-foreground">
-            Déjà inscrit ?{" "}
+            Dj inscrit ?{" "}
             <Link to="/login" className="text-primary font-medium">
               Se connecter
             </Link>

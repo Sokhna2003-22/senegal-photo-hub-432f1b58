@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ function PortfolioCreate() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-10 max-w-2xl">
+      <div className="container mx-auto px-4 py-10 max-w-2xl"><div style={{marginBottom:"16px"}}><button onClick={() => window.history.back()} style={{display:"flex",alignItems:"center",gap:"6px",background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"14px"}}>&#8592; Retour</button></div>
         <div className="bg-card rounded-2xl shadow-[var(--shadow-card)] overflow-hidden">
           <div className="bg-navy-deep text-white px-6 py-4 font-semibold text-lg">
             📁 Créer un album portfolio
